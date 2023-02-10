@@ -6,6 +6,10 @@ import store from './store'
 
 Vue.config.productionTip = false
 
+//大转盘抽奖组件
+import LuckyCanvas from '@lucky-canvas/vue'
+Vue.use(LuckyCanvas)
+
 new Vue({
   router,
   store,
