@@ -12,6 +12,8 @@ import Qrcode from "../views/Qrcode.vue";
 import Viewer from "../views/Viewer.vue";
 import EpsgLatlng from "../views/epsg.latlng.vue";
 import Highcharts from "../views/Highcharts.vue"
+import Flv from "../views/Flv.vue"
+import test from "../views/test.vue"
 
 Vue.use(VueRouter)
 
@@ -76,6 +78,16 @@ const routes = [
 		path: '/highcharts',
 		name: 'highcharts',
 		component: Highcharts
+	},
+	{
+		path: '/flv',
+		name: 'flv',
+		component: Flv
+	},
+	{
+		path: '/test',
+		name: 'test',
+		component: test
 	},
 ];
 

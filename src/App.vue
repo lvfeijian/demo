@@ -2,7 +2,7 @@
   <div id="app">
     <router-view/>
     <div class="btn" @click="go">返回首页</div>
-    <div @click="golink">跳转到全景</div>
+    <!-- <div @click="golink">跳转到全景</div> -->
   </div>
 </template>
 <script>

@@ -11,6 +11,7 @@
     <button @click="link('Viewer')">图片浏览组件</button>
     <button @click="link('EpsgLatlng')">epsg.io经纬度转换</button>
     <button @click="link('Highcharts')">Highcharts</button>
+    <button @click="link('Flv')">Flv.js</button>
   </div>
 </template>
 

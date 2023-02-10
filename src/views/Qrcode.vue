@@ -6,7 +6,6 @@
 			<img :src="item.url" />
 			<p>{{item.cdlsjzbh}}{{ item.relicName }}</p>
 		</div>
-		<canvas id="myCanvas" width="200px" height="200px"></canvas>
 	</div>
 </template>
 
@@ -79,9 +78,14 @@ export default {
 				let completeLink =
 					"https://zw.cdzjryb.com/lsjz/#/mapIndex/" + item.buildingUid;
 				// console.log(completeLink);
-				return QRCode.toDataURL(completeLink, opt).then((url) => {
-					this.QRImgUrl.push({ url, relicName: item.lsjzmc,cdlsjzbh: item.cdlsjzbh });
-				});
+				// return QRCode.toCanvas(completeLink, opt).then((url) => {
+				// 	this.QRImgUrl.push({ url, relicName: item.lsjzmc,cdlsjzbh: item.cdlsjzbh });
+				// });
+				this.initCanvas(completeLink, 256, item.cdlsjzbh.split('-').pop() + item.lsjzmc).then(res => {
+					// console.log(res);
+						this.QRImgUrl.push({ url: res, relicName: item.lsjzmc,cdlsjzbh: item.cdlsjzbh })
+				})
+				// 
 			});
 		},
 		download() {
@@ -103,10 +107,52 @@ export default {
 			});
 			console.log(a,'++++');
 		},
-		getCanvas() {
-			var canvas = document.createElement('canvas');
-			var context = canvas.getContext('2d');
-		}
+		// url 二维码内容链接 size 二维码大小（高宽） qrText 底部描述文字 color 二维码颜色
+ 
+		async initCanvas(url, size, qrText, color = '#000') {
+      const canvas = await QRCode.toCanvas(url, {
+        errorCorrectionLevel: 'H',
+        margin: 1, // 设置padding 二维码的padding
+        height: size,
+        width: size,
+      })
+      const fontWeight='bold' // 字体 粗体 格式
+      const fontSize = 14 // 字体大小
+      const tb = 5 // 底部文字上下间距
+      const realHeight = size + fontSize + 2*tb //实际高度
+      // 画布上下文对象
+      const ctx = canvas.getContext("2d");
+      // 获取二维码数据
+      const data = ctx.getImageData(0, 0, size, size);
+			ctx.fillStyle = "#fff"
+			console.log(ctx.measureText(qrText).width);
+			canvas.setAttribute('height', realHeight); // 重设画布像素高度
+      ctx.font = `${fontWeight} ${fontSize}px Arial`;
+			// let w = ctx.measureText(qrText).width>128 ?  ctx.measureText(qrText).width + 40: 128
+      // canvas.setAttribute('width', w); // 重设画布像素高度
+      canvas.style.setProperty('height', realHeight + 'px'); // 重设画布实际高度
+      ctx.fillRect(0, 0, size, realHeight)
+      ctx.putImageData(data, 0, 0)// 填充二维码数据
+      const textWidth = ctx.measureText(qrText).width; //文字真实宽度
+      const ftop = size + tb; //文字距顶部位置
+      const fleft = (size - textWidth) / 2; //根据字体大小计算文字left
+      const textPadding = fontSize / 2; //字体边距为字体大小的一半可以自己设置
+      // 设置底部背景色
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, size, size, realHeight - 2*tb);
+      // 设置字体填充位置
+      ctx.fillRect(
+          fleft - textPadding / 2,
+          ftop - textPadding / 2,
+          textWidth + textPadding,
+          fontSize + textPadding
+      );
+      ctx.textBaseline = "top"; //设置绘制文本时的文本基线。
+			ctx.fillStyle = "#333";// 字体颜色
+			ctx.fillText(qrText, 0, ftop);
+			console.log(canvas.toDataURL());
+      return canvas.toDataURL()
+    }
 	},
 };
 </script>
